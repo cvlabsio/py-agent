@@ -27,6 +27,7 @@ from pydantic.alias_generators import to_camel
 
 
 class KnownApi(str, Enum):
+    OLLAMA = "ollama"
     OPENAI_COMPLETIONS = "openai-completions"
     MISTRAL_CONVERSATIONS = "mistral-conversations"
     OPENAI_RESPONSES = "openai-responses"

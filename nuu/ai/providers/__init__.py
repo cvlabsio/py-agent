@@ -31,6 +31,7 @@ from .google_vertex import (
     GoogleVertexOptions,
 )
 from .mistral import stream_mistral, stream_simple_mistral, MistralOptions
+from .ollama import stream_ollama, stream_simple_ollama
 from .openai_codex_responses import (
     stream_openai_codex_responses,
     stream_simple_openai_codex_responses,
@@ -87,6 +88,8 @@ __all__ = [
     "stream_mistral",
     "stream_simple_mistral",
     "MistralOptions",
+    "stream_ollama",
+    "stream_simple_ollama",
     "stream_openai_codex_responses",
     "stream_simple_openai_codex_responses",
     "OpenAICodexResponsesOptions",

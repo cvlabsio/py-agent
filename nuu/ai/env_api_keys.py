@@ -50,6 +50,14 @@ _API_KEY_ENV_MAP: dict[str, str | list[str]] = {
     "xiaomi-token-plan-sgp": "XIAOMI_TOKEN_PLAN_SGP_API_KEY",
 }
 
+_PROVIDER_ALIASES: dict[str, str] = {
+    "openai_compatible": "openai-compatible",
+    "openai compatible": "openai-compatible",
+    "openaicompatible": "openai-compatible",
+    "lmstudio": "lm-studio",
+    "local-ai": "localai",
+}
+
 _LOCAL_OPENAI_COMPATIBLE_PROVIDERS = {
     "ollama",
     "vllm",
@@ -59,12 +67,22 @@ _LOCAL_OPENAI_COMPATIBLE_PROVIDERS = {
 }
 
 
+def normalize_provider_name(provider: str) -> str:
+    normalized = provider.strip().lower().replace("_", "-")
+    return _PROVIDER_ALIASES.get(normalized, normalized)
+
+
+def provider_supports_missing_api_key(provider: str) -> bool:
+    return normalize_provider_name(provider) in _LOCAL_OPENAI_COMPATIBLE_PROVIDERS
+
+
 def get_api_key_env_vars(provider: str) -> list[str]:
-    if provider == "anthropic":
+    normalized_provider = normalize_provider_name(provider)
+    if normalized_provider == "anthropic":
         return ["ANTHROPIC_OAUTH_TOKEN", "ANTHROPIC_API_KEY"]
-    if provider == "github-copilot":
+    if normalized_provider == "github-copilot":
         return ["GITHUB_COPILOT_TOKEN"]
-    entry = _API_KEY_ENV_MAP.get(provider)
+    entry = _API_KEY_ENV_MAP.get(normalized_provider)
     if entry is None:
         return []
     if isinstance(entry, list):
@@ -77,16 +95,17 @@ def find_env_keys(provider: str) -> list[str]:
 
 
 def get_env_api_key(provider: str) -> str | None:
+    normalized_provider = normalize_provider_name(provider)
     keys = find_env_keys(provider)
     if keys:
         value = os.environ.get(keys[0])
         if value is not None:
             return value
 
-    if provider in _LOCAL_OPENAI_COMPATIBLE_PROVIDERS:
+    if provider_supports_missing_api_key(normalized_provider):
         return "<authenticated>"
 
-    if provider == "google-vertex":
+    if normalized_provider == "google-vertex":
         gac_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
         if gac_path is not None:
             has_adc = os.path.exists(gac_path)
@@ -107,7 +126,7 @@ def get_env_api_key(provider: str) -> str | None:
         if has_adc and has_project and has_location:
             return "<authenticated>"
 
-    if provider == "amazon-bedrock":
+    if normalized_provider == "amazon-bedrock":
         if (
             os.environ.get("AWS_PROFILE") is not None
             or (

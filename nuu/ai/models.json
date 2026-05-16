@@ -20128,7 +20128,7 @@
     "llama3.1:8b": {
       "id": "llama3.1:8b",
       "name": "Llama 3.1 8B (Ollama)",
-      "api": "openai-completions",
+      "api": "ollama",
       "provider": "ollama",
       "baseUrl": "http://localhost:11434/v1",
       "compat": {

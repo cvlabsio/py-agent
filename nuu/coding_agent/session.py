@@ -18,17 +18,20 @@ from .session_manager import SessionManager
 
 
 def _resolve_api_key(provider: str) -> str | None:
-    from ..ai.env_api_keys import get_env_api_key
+    from ..ai.env_api_keys import get_env_api_key, normalize_provider_name
 
     key = get_env_api_key(provider)
     if key:
         return key
+    normalized_provider = normalize_provider_name(provider)
     auth_file = os.path.expanduser("~/.nuu/auth.json")
     if os.path.exists(auth_file):
         try:
             with open(auth_file) as f:
                 stored = json.load(f)
-            return stored.get(provider)
+            if provider in stored:
+                return stored.get(provider)
+            return stored.get(normalized_provider)
         except Exception:
             pass
     return None

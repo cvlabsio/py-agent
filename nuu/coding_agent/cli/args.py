@@ -66,6 +66,7 @@ class ParsedArgs(TypedDict, total=False):
 
 ENV_VARS_DOC = """
 Environment Variables:
+  OLLAMA_BASE_URL                  - Ollama base URL override (e.g. http://localhost:11434)
   OLLAMA_API_KEY                   - Optional API key for Ollama-compatible proxies
   VLLM_API_KEY                     - Optional API key for vLLM-compatible servers
   OPENAI_COMPATIBLE_API_KEY        - Optional API key for generic OpenAI-compatible endpoints

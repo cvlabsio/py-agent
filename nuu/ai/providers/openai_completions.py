@@ -23,6 +23,7 @@ from typing import Any, Awaitable, Callable, Literal
 
 import httpx
 
+from ..env_api_keys import normalize_provider_name
 from ..event_stream import AssistantMessageEventStream
 from ..models import calculate_cost, clamp_thinking_level
 from ..types import (
@@ -226,7 +227,10 @@ def get_env_api_key(provider: str) -> str | None:
 
 
 def provider_supports_missing_api_key(provider: str) -> bool:
-    return provider in _KEY_OPTIONAL_OPENAI_COMPATIBLE_PROVIDERS
+    return (
+        normalize_provider_name(provider)
+        in _KEY_OPTIONAL_OPENAI_COMPATIBLE_PROVIDERS
+    )
 
 
 def normalize_api_key(api_key: str | None) -> str:

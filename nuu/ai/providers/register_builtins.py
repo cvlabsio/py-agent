@@ -32,6 +32,7 @@ from .openai_completions import (
     stream_openai_completions,
     stream_simple_openai_completions,
 )
+from .ollama import stream_ollama, stream_simple_ollama
 
 
 def register_builtin_providers() -> None:
@@ -45,6 +46,14 @@ def register_builtin_providers() -> None:
             api=KnownApi.OPENAI_COMPLETIONS,
             stream=stream_openai_completions,
             stream_simple=stream_simple_openai_completions,
+        )
+    )
+
+    register_api_provider(
+        ApiProvider(
+            api=KnownApi.OLLAMA,
+            stream=stream_ollama,
+            stream_simple=stream_simple_ollama,
         )
     )
 
